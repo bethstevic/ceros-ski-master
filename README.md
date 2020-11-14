@@ -113,6 +113,6 @@ We are looking forward to see what you come up with!
   * Desired Behavior:
     * When the skier crashes the direction should be updated once and not enter a loop
   * Actual Behavior:
-    * When the skier crashes changing the direction to 0 starts a loop with skier.setDirection being continuously called
+    * When the skier crashes  skier.setDirection enters a loop and is continuously called
   * Fix:
-    * This bug was found after the page no longer crashed.
+    * Create a new class field called hasCrashed. Set its initial value to false. If there is a collision and hasCrashed is false, the direction will be updated. When a collision occurs hasCrashed is set to true to prevent the direction from being set multiple times. Once the skier starts moving again, hasCrashed is set back to false.

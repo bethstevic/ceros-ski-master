@@ -120,7 +120,6 @@ export class Skier extends Entity {
         });
 
         if(collision && !this.hasCrashed) {
-            console.log('***', 'COLLISION: ', collision)
             this.setDirection(Constants.SKIER_DIRECTIONS.CRASH);
             this.hasCrashed = true
         }
