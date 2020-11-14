@@ -4,8 +4,8 @@ import { intersectTwoRects, Rect } from "../Core/Utils";
 
 export class Skier extends Entity {
     assetName = Constants.SKIER_DOWN;
-
     direction = Constants.SKIER_DIRECTIONS.DOWN;
+    hasCrashed = false
     speed = Constants.SKIER_STARTING_SPEED;
 
     constructor(x, y) {
@@ -13,6 +13,8 @@ export class Skier extends Entity {
     }
 
     setDirection(direction) {
+      console.log('***', 'HAS CRASHED', this.hasCrashed)
+      console.log('***', 'DIRECTION', this.direction)
         this.direction = direction;
         this.updateAsset();
     }
@@ -33,6 +35,12 @@ export class Skier extends Entity {
                 this.moveSkierRightDown();
                 break;
         }
+    }
+
+    resetHasCrashed() {
+      if(this.hasCrashed) {
+        this.hasCrashed = false
+      }
     }
 
     moveSkierLeft() {
@@ -62,7 +70,8 @@ export class Skier extends Entity {
     }
 
     turnLeft() {
-        if(this.direction === Constants.SKIER_DIRECTIONS.LEFT) {
+        this.resetHasCrashed()
+        if(this.direction === Constants.SKIER_DIRECTIONS.LEFT || this.direction === Constants.SKIER_DIRECTIONS.CRASH) {
             this.moveSkierLeft();
         }
         else {
@@ -71,6 +80,7 @@ export class Skier extends Entity {
     }
 
     turnRight() {
+        this.resetHasCrashed()
         if(this.direction === Constants.SKIER_DIRECTIONS.RIGHT) {
             this.moveSkierRight();
         }
@@ -111,8 +121,10 @@ export class Skier extends Entity {
             return intersectTwoRects(skierBounds, obstacleBounds);
         });
 
-        if(collision) {
+        if(collision && !this.hasCrashed) {
+            console.log('***', 'COLLISION: ', collision)
             this.setDirection(Constants.SKIER_DIRECTIONS.CRASH);
+            this.hasCrashed = true
         }
     };
 }

@@ -30,6 +30,10 @@ export class AssetManager {
     }
 
     getAsset(assetName) {
+      if (assetName) {
         return this.loadedAssets[assetName];
+      }
+
+      return null
     }
 }
