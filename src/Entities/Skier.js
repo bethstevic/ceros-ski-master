@@ -13,8 +13,6 @@ export class Skier extends Entity {
     }
 
     setDirection(direction) {
-      console.log('***', 'HAS CRASHED', this.hasCrashed)
-      console.log('***', 'DIRECTION', this.direction)
         this.direction = direction;
         this.updateAsset();
     }

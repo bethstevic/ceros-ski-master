@@ -100,10 +100,19 @@ how creative candidates get with this.
 We are looking forward to see what you come up with!
 
 **Bug Fixes**
-* Desired Behavior:
-  * When skier crashes into an obstacle and user press the left arrow key, page should not crash
-* Actual Behavior:
-  * Using the left arrow key after the skier has crashed throws an error and crashes the page
-* Fix:
-  * What caused the page to crash, is when the direction was 0 (meaning a crash had occurred) pressing the left arrow key called the Skier.turnLeft method which decreases the direction by 1. With the new direction set to -1, there was no SKIER_DIRECTIONS const to match and assetName was set to null. Skier.checkIfSkierHitObstacle would throw a type error: `Cannot read property 'width' of null`
-  * Added a check to Skier.turnLeft to prevent the direction from being decremented.
+* Initial Bug:
+  * Desired Behavior:
+    * When skier crashes into an obstacle and user press the left arrow key, page should not crash
+  * Actual Behavior:
+    * Using the left arrow key after the skier has crashed throws an error and crashes the page
+  * Fix:
+    * What caused the page to crash, is when the direction was 0 (meaning a crash had occurred) pressing the left arrow key called the Skier.turnLeft method which decreases the direction by 1. With the new direction set to -1, there was no SKIER_DIRECTIONS const to match and assetName was set to null. Skier.checkIfSkierHitObstacle would throw a type error: `Cannot read property 'width' of null`
+    * Added a check to Skier.turnLeft to prevent the direction from being decremented.
+
+* Bug: Skier.setDirection loop
+  * Desired Behavior:
+    * When the skier crashes the direction should be updated once and not enter a loop
+  * Actual Behavior:
+    * When the skier crashes changing the direction to 0 starts a loop with skier.setDirection being continuously called
+  * Fix:
+    * This bug was found after the page no longer crashed.
