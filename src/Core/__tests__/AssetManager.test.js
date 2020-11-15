@@ -1,3 +1,4 @@
+import "babel-polyfill";
 import { AssetManager } from '../AssetManager'
 
 describe('Core/AssetManager', () => {

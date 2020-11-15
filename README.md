@@ -106,13 +106,46 @@ We are looking forward to see what you come up with!
   * Actual Behavior:
     * Using the left arrow key after the skier has crashed throws an error and crashes the page
   * Fix:
-    * What caused the page to crash, is when the direction was 0 (meaning a crash had occurred) pressing the left arrow key called the Skier.turnLeft method which decreases the direction by 1. With the new direction set to -1, there was no SKIER_DIRECTIONS const to match and assetName was set to null. Skier.checkIfSkierHitObstacle would throw a type error: `Cannot read property 'width' of null`
+    * What caused the page to crash is when the direction was 0 (meaning a crash had occurred) pressing the left arrow key called the Skier.turnLeft method which decreases the direction by 1. With the new direction set to -1, there was no SKIER_DIRECTIONS const to match and assetName was set to null. Skier.checkIfSkierHitObstacle would throw a type error: `Cannot read property 'width' of null`
     * Added a check to Skier.turnLeft to prevent the direction from being decremented.
+    * I believe this is a bandaid fix, turning left should appropriately increment or decrement the direction value regardless of what the previous action was.
 
 * Bug: Skier.setDirection loop
   * Desired Behavior:
     * When the skier crashes the direction should be updated once and not enter a loop
   * Actual Behavior:
-    * When the skier crashes  skier.setDirection enters a loop and is continuously called
+    * When the skier crashes skier.setDirection enters a loop and is continuously called
   * Fix:
-    * Create a new class field called hasCrashed. Set its initial value to false. If there is a collision and hasCrashed is false, the direction will be updated. When a collision occurs hasCrashed is set to true to prevent the direction from being set multiple times. Once the skier starts moving again, hasCrashed is set back to false.
+    * Create a new class field for Skier called hasCrashed. Set its initial value to false. If there is a collision and hasCrashed is false, the direction will be updated. When a collision occurs hasCrashed is set to true to prevent the direction from being set multiple times. Once the skier starts moving again, hasCrashed is set back to false.
+
+* Bug: image-src not explicitly set
+  * Desired Behavior:
+   * No warnings about the image src
+  * Actual Behavior
+   * Occasional warnings in the browser console `'img-src' was not explicitly set, so 'default-src' is used as a fallback.`
+  * Fix
+    * The warning is not always displayed, but adding a content meta tag prevents it from ever displaying
+
+**Known Bugs Not Fixed Yet**
+* Terminal console displays `Entrypoint undefined = index.html`. Most likely webpack plugin `htmlWebpackPlugin` needs its template reconfigured.
+* Occasional type error - `Cannot read property 'left' of null` on page load. Needs to be investigated.
+* `Skier.checkIfSkierHitObstacle` is called way to many times, even when the skier is immobile. This needs to be investigated and fixed. It should only be called while the skier is moving.
+
+  **Improvements**
+  * Tests added for src/Entities/Skier
+  * Allow skier to jump by pressing the space bar (not allowed after collision occurs before another direction is initiated)
+
+  **To Do**
+  * Write tests for all other files
+  * Add eslint and eslint config to enforce consistent syntax
+  * Prevent page from crashing when asset is undefined/null. An error should be thrown in the console and handled gracefully
+  * Add ramps for Skier - only let Skier jump on ramps
+  * Create rule for Skier to only be able to jump over rocks, not trees
+  * Create functionality for Rino to appear after a set amount of time
+  * Have Rino chase skier
+  * Have Rino eat skier after catching him
+  * Create the ability to pause/reload the game
+  * Create an alert when game is loaded with instructions
+  * Create an alert when skier dies that allows a game reload
+  * Create a hint box that sticks to top of browser
+  * Create a scoring method
