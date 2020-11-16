@@ -1,6 +1,6 @@
-import * as Constants from "../Constants";
+import * as Constants from "Constants";
+import { intersectTwoRects, Rect } from "Core/Utils";
 import { Entity } from "./Entity";
-import { intersectTwoRects, Rect } from "../Core/Utils";
 
 export class Skier extends Entity {
     assetName = Constants.SKIER_DOWN;
@@ -9,14 +9,43 @@ export class Skier extends Entity {
     skierIsJumping = false;
     speed = Constants.SKIER_STARTING_SPEED;
     skierShouldJump = false
+    hasBeenCaught = false
+    rhinoIsComing = false
 
-    constructor(x, y) {
-        super(x, y);
+    constructor(x, y, store) {
+        super(x, y, store);
+        document.addEventListener(Constants.RHINO_CAUGHT_SKIER, this.skierCaught)
+        document.addEventListener(Constants.RHINO_COMING, this.rhinoComing)
+    }
+
+    sendCoordinantsToRhino = () => {
+      const event = new CustomEvent(Constants.SKIER_COORDINATES, {
+        x: this.x,
+        y: this.y,
+      })
+      document.dispatchEvent(event)
     }
 
     setDirection(direction) {
         this.direction = direction;
         this.updateAsset();
+        if(this.rhinoIsComing) {
+          console.log('***', 'SKIER KNOWS RHINO IS COMING: ', this.x, this.y)
+          this.sendCoordinantsToRhino()
+        }
+    }
+
+    rhinoComing() {
+      this.rhinoIsComing = true
+      console.log('***', 'Y: ', this.y)
+      console.log('***', 'X: ', this.x)
+      const event = new CustomEvent(Constants.SKIER_COORDINATES, {
+        detail: {
+          x: this.x,
+          y: this.y,
+        }
+      })
+      document.dispatchEvent(event)
     }
 
     updateAsset() {
@@ -48,6 +77,7 @@ export class Skier extends Entity {
     }
 
     moveSkierLeftDown() {
+        console.log('***', 'XX: ', this.x)
         this.x -= this.speed / Constants.SKIER_DIAGONAL_SPEED_REDUCER;
         this.y += this.speed / Constants.SKIER_DIAGONAL_SPEED_REDUCER;
     }
@@ -86,8 +116,9 @@ export class Skier extends Entity {
     turnLeft() {
         this.resetHasCrashed()
         if(
-          this.direction === Constants.SKIER_DIRECTIONS.LEFT ||
-          this.direction === Constants.SKIER_DIRECTIONS.CRASH
+          (this.direction === Constants.SKIER_DIRECTIONS.LEFT ||
+          this.direction === Constants.SKIER_DIRECTIONS.CRASH) &&
+          !this.hasBeenCaught
         ) {
             this.moveSkierLeft();
         }
@@ -98,7 +129,11 @@ export class Skier extends Entity {
 
     turnRight() {
         this.resetHasCrashed()
-        if(this.direction === Constants.SKIER_DIRECTIONS.RIGHT || this.direction === Constants.SKIER_DIRECTIONS.CRASH) {
+        if(
+          (this.direction === Constants.SKIER_DIRECTIONS.RIGHT ||
+          this.direction === Constants.SKIER_DIRECTIONS.CRASH) &&
+          !this.hasBeenCaught
+        ) {
             this.moveSkierRight();
         }
         else {
@@ -108,22 +143,35 @@ export class Skier extends Entity {
 
     turnUp() {
       this.resetHasCrashed()
-        if(this.direction === Constants.SKIER_DIRECTIONS.LEFT || this.direction === Constants.SKIER_DIRECTIONS.RIGHT) {
+        if(
+          (this.direction === Constants.SKIER_DIRECTIONS.LEFT ||
+          this.direction === Constants.SKIER_DIRECTIONS.RIGHT) &&
+          !this.hasBeenCaught
+        ) {
             this.moveSkierUp();
         }
     }
 
     turnDown() {
-        this.resetHasCrashed()
-        this.setDirection(Constants.SKIER_DIRECTIONS.DOWN);
+        if (!this.hasBeenCaught) {
+          this.resetHasCrashed()
+          this.setDirection(Constants.SKIER_DIRECTIONS.DOWN);
+        }
     }
 
     jump() {
       if(
-          Constants.SKIER_DIRECTIONS.JUMP_START && (this.direction !== Constants.SKIER_DIRECTIONS.CRASH)) {
+          Constants.SKIER_DIRECTIONS.JUMP_START &&
+          (this.direction !== Constants.SKIER_DIRECTIONS.CRASH) &&
+          !this.hasBeenCaught
+        ) {
         this.startSkierJump()
         this.setDirection(Constants.SKIER_DIRECTIONS.JUMP_START);
       }
+    }
+
+    skierCaught = () => {
+      this.hasBeenCaught = true
     }
 
     checkIfSkierHitObstacle(obstacleManager, assetManager) {
@@ -154,7 +202,7 @@ export class Skier extends Entity {
             return isCollision
         });
 
-        if(collision && !this.hasCollided && !this.skierShouldJump) {
+        if(collision && !this.hasCollided && !this.skierShouldJump && !this.hasBeenCaught) {
             this.setDirection(Constants.SKIER_DIRECTIONS.CRASH);
             this.hasCollided = true
         }

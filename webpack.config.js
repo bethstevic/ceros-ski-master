@@ -43,6 +43,13 @@ const config = {
             },
         ])
     ],
+    resolve: {
+      modules: [path.resolve(__dirname, './src'), 'node_modules'],
+      extensions: ['.js', '.json'],
+      alias: {
+        reducers: path.resolve(__dirname, './src/store/reducers')
+      }
+    }
 };
 
 module.exports = config;

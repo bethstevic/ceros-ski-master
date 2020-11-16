@@ -132,6 +132,8 @@ We are looking forward to see what you come up with!
 * `Skier.checkIfSkierHitObstacle` is called way to many times, even when the skier is immobile. This needs to be investigated and fixed. It should only be called while the skier is moving.
 
   **Improvements**
+  * Set up absolute imports for less confusing imports
+  * Added redux for state management
   * Tests added for src/Entities/Skier
   * Allow skier to jump
     * Jump anytime by pressing the space bar
