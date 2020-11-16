@@ -133,7 +133,10 @@ We are looking forward to see what you come up with!
 
   **Improvements**
   * Tests added for src/Entities/Skier
-  * Allow skier to jump by pressing the space bar (not allowed after collision occurs before another direction is initiated)
+  * Allow skier to jump
+    * Jump anytime by pressing the space bar
+    * Colliding with a ramp will also make the skier jump
+
 
   **To Do**
   * Write tests for all other files

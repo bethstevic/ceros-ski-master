@@ -15,6 +15,7 @@ export class ObstacleManager {
 
     getObstacles() {
         return this.obstacles;
+
     }
 
     drawObstacles(canvas, assetManager) {
@@ -80,7 +81,6 @@ export class ObstacleManager {
     placeRandomObstacle(minX, maxX, minY, maxY) {
         const position = this.calculateOpenPosition(minX, maxX, minY, maxY);
         const newObstacle = new Obstacle(position.x, position.y);
-
         this.obstacles.push(newObstacle);
     }
 
