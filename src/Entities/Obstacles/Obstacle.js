@@ -3,6 +3,7 @@ import { Entity } from "../Entity";
 import { randomInt } from '../../Core/Utils';
 
 const assetTypes = [
+    Constants.RAMP,
     Constants.TREE,
     Constants.TREE_CLUSTER,
     Constants.ROCK1,

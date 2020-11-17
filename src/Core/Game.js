@@ -1,8 +1,9 @@
-import * as Constants from "../Constants";
+import * as Constants from "Constants";
+import { Skier } from "Entities/Skier";
+import { ObstacleManager } from "Entities/Obstacles/ObstacleManager";
+import { Rhino } from 'Entities/Rhino';
 import { AssetManager } from "./AssetManager";
 import { Canvas } from './Canvas';
-import { Skier } from "../Entities/Skier";
-import { ObstacleManager } from "../Entities/Obstacles/ObstacleManager";
 import { Rect } from './Utils';
 
 export class Game {
@@ -13,12 +14,15 @@ export class Game {
         this.canvas = new Canvas(Constants.GAME_WIDTH, Constants.GAME_HEIGHT);
         this.skier = new Skier(0, 0);
         this.obstacleManager = new ObstacleManager();
+        this.rhino = new Rhino(0, 0);
+        this.skierCurrentCoord = (0, 0);
 
         document.addEventListener('keydown', this.handleKeyDown.bind(this));
     }
 
     init() {
         this.obstacleManager.placeInitialObstacles();
+        this.sendOutRhino();
     }
 
     async load() {
@@ -60,6 +64,15 @@ export class Game {
         this.gameWindow = new Rect(left, top, left + Constants.GAME_WIDTH, top + Constants.GAME_HEIGHT);
     }
 
+    sendOutRhino() {
+      setTimeout(() => {
+        console.log('***', 'RHINO IS COMING')
+        const event = new CustomEvent(Constants.RHINO_COMING)
+        document.dispatchEvent(event)
+        this.rhino.move()
+      }, Constants.TIME_TO_EAT_SKIER)
+    }
+
     handleKeyDown(event) {
         switch(event.which) {
             case Constants.KEYS.LEFT:
@@ -76,6 +89,10 @@ export class Game {
                 break;
             case Constants.KEYS.DOWN:
                 this.skier.turnDown();
+                event.preventDefault();
+                break;
+            case Constants.KEYS.JUMP:
+                this.skier.jump();
                 event.preventDefault();
                 break;
         }

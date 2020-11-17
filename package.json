@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Ceros full stack developer code challenge",
   "main": "index.js",
+  "moduleRoots": [
+    "src"
+  ],
   "scripts": {
     "dev": "webpack-dev-server --mode development",
     "build": "webpack --mode production",
@@ -37,6 +40,6 @@
   "dependencies": {
     "css-loader": "^2.1.1",
     "express": "^4.17.1",
-    "style-loader": "^0.23.1"
+    "style-loader": "^2.0.0"
   }
 }
